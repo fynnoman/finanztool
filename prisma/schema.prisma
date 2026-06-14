@@ -1,0 +1,279 @@
+// Finanztool — Datenmodell
+// Provider: sqlite für dev, einfach auf "postgresql" umstellen für Neon-Prod.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ── Auth.js entities ─────────────────────────────────────────────
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ── Geschäftsdaten ───────────────────────────────────────────────
+model BusinessSettings {
+  id                  String   @id @default(cuid())
+  businessName        String
+  businessAddress     String   @default("")
+  businessEmail       String   @default("")
+  businessPhone       String   @default("")
+  taxId               String   @default("")   // USt-IdNr
+  taxNumber           String   @default("")   // Steuernummer
+  iban                String   @default("")
+  bic                 String   @default("")
+  bankName            String   @default("")
+  logoDataUrl         String?                  // base64 PNG/JPG/SVG
+  vatRate             Float    @default(19)    // Prozent
+  paymentTermsDays    Int      @default(14)
+  invoiceNumberPrefix String   @default("RE")
+  quoteNumberPrefix   String   @default("AN")
+  invoiceCounter      Int      @default(1)
+  quoteCounter        Int      @default(1)
+  invoiceFooter       String   @default("Vielen Dank für die gute Zusammenarbeit.")
+  // OpenAI integration
+  openaiApiKey        String   @default("")
+  openaiModel         String   @default("gpt-4o-mini")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Customer {
+  id          String       @id @default(cuid())
+  name        String
+  company     String       @default("")
+  email       String       @default("")
+  phone       String       @default("")
+  address     String       @default("")
+  taxId       String       @default("")
+  notes       String       @default("")
+  archivedAt  DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  quotes      Quote[]
+  invoices    Invoice[]
+  uploads     UploadedInvoice[]
+  events      CalendarEvent[]
+  issues      Issue[]
+  cashIncomes CashIncome[]
+}
+
+// Wünsche / offene Aufgaben pro Kunde — was muss noch geliefert werden.
+model Issue {
+  id          String   @id @default(cuid())
+  title       String
+  details     String   @default("")
+  price       Float?
+  done        Boolean  @default(false)
+  doneAt      DateTime?
+  order       Int      @default(0)
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Bareinnahmen — Geld, das ohne Rechnung eingegangen ist (off-the-books).
+// Steuerlich relevant: fließt in Reingewinn, NICHT in USt-Soll.
+model CashIncome {
+  id          String   @id @default(cuid())
+  details     String
+  amount      Float
+  date        DateTime
+  notes       String   @default("")
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+}
+
+// Absetzbare Ausgaben — Betriebsausgaben, die ESt und MwSt-Vorsteuer reduzieren.
+model DeductibleExpense {
+  id          String   @id @default(cuid())
+  details     String
+  gross       Float    // Brutto
+  net         Float    // Netto
+  vatAmount   Float    // Vorsteuer
+  vatRate     Float    @default(19)
+  date        DateTime
+  category    String   @default("Sonstiges") // Software, Büro, Fahrtkosten, …
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+}
+
+// Leads — verkaufschance vor Kundenstatus, Kanban-Pipeline.
+model Lead {
+  id            String   @id @default(cuid())
+  name          String
+  company       String   @default("")
+  email         String   @default("")
+  phone         String   @default("")
+  source        String   @default("")
+  expectedValue Float?
+  offerDescription String @default("")
+  status        String   @default("NEW") // NEW / CONTACTED / MEETING / PROPOSAL / WON / LOST
+  notes         String   @default("")
+  lastContactAt DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Uploaded PDF that has been parsed (or attempted to be parsed) by the AI.
+// Linked back to the Invoice record it produced on success.
+model UploadedInvoice {
+  id              String   @id @default(cuid())
+  filename        String
+  fileData        String   // base64 of the original PDF
+  status          String   @default("MANUAL") // PARSED / MANUAL / ERROR
+  extractedRaw    String   @default("")       // raw OCR'd text (debugging)
+  extractedTotal  Float?
+  extractedNet    Float?
+  extractedVat    Float?
+  extractedDate   DateTime?
+  errorMessage    String   @default("")
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  invoiceId       String?  @unique
+  invoice         Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  uploadedAt      DateTime @default(now())
+}
+
+// ── Angebote ─────────────────────────────────────────────────────
+enum QuoteStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+model Quote {
+  id          String      @id @default(cuid())
+  number      String      @unique
+  date        DateTime
+  validUntil  DateTime?
+  status      String      @default("DRAFT") // QuoteStatus values
+  subtotal    Float       @default(0)       // net
+  vatRate     Float       @default(19)
+  vatAmount   Float       @default(0)
+  total       Float       @default(0)       // gross
+  notes       String      @default("")
+  acceptedAt  DateTime?
+  declinedAt  DateTime?
+  customerId  String
+  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  items       QuoteItem[]
+  invoice     Invoice?    // a quote can convert into a single invoice
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model QuoteItem {
+  id         String  @id @default(cuid())
+  quoteId    String
+  quote      Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  details    String
+  quantity   Float   @default(1)
+  unitPrice  Float   @default(0)
+  order      Int     @default(0)
+}
+
+// ── Rechnungen (Standard + Abschlag + Schluss) ───────────────────
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIAL_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum InvoiceKind {
+  STANDARD
+  ABSCHLAG  // partial / down-payment
+  SCHLUSS   // final invoice that subtracts previous Abschläge
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  number      String        @unique
+  date        DateTime
+  dueDate     DateTime?
+  kind        String        @default("STANDARD") // InvoiceKind values
+  status      String        @default("DRAFT")    // InvoiceStatus values
+  subtotal    Float         @default(0)          // net before deductions
+  vatRate     Float         @default(19)
+  vatAmount   Float         @default(0)
+  total       Float         @default(0)          // gross (after deductions)
+  paidAmount  Float         @default(0)
+  paidAt      DateTime?
+  notes       String        @default("")
+  customerId  String
+  customer    Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Optional source: invoice was created from this quote.
+  sourceQuoteId String?    @unique
+  sourceQuote   Quote?      @relation(fields: [sourceQuoteId], references: [id])
+  // For Schluss-Rechnung: reference the previous Abschlag invoices that are deducted.
+  parentInvoiceId String?
+  parentInvoice   Invoice?  @relation("InvoiceLineage", fields: [parentInvoiceId], references: [id])
+  childInvoices   Invoice[] @relation("InvoiceLineage")
+  items       InvoiceItem[]
+  events      CalendarEvent[]
+  upload      UploadedInvoice?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model InvoiceItem {
+  id         String  @id @default(cuid())
+  invoiceId  String
+  invoice    Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  details    String
+  quantity   Float   @default(1)
+  unitPrice  Float   @default(0)
+  order      Int     @default(0)
+}
+
+// ── Kalender ─────────────────────────────────────────────────────
+enum EventKind {
+  TERMIN          // manual appointment
+  ZAHLUNGSFRIST   // auto-generated from invoice due date
+  ANGEBOT_ABLAUF  // auto-generated from quote validUntil
+}
+
+model CalendarEvent {
+  id          String   @id @default(cuid())
+  title       String
+  details     String   @default("")
+  start       DateTime
+  end         DateTime?
+  allDay      Boolean  @default(true)
+  kind        String   @default("TERMIN") // EventKind values
+  completed   Boolean  @default(false)
+  // Optional links to other entities so we can navigate from event → source.
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  invoiceId   String?
+  invoice     Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
