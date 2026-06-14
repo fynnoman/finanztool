@@ -1,12 +1,19 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Providers } from "@/components/Providers";
 import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 // Alle geschützten App-Pages sind dynamisch — sie lesen jederzeit aktuelle DB-Daten,
 // dürfen also nicht zur Build-Zeit pre-rendered werden.
 export const dynamic = "force-dynamic";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  // Echte Auth-Prüfung passiert hier, nicht in der Middleware — so kann
+  // die Middleware Edge-light bleiben und der Layout-Check JWT + DB-Zugriff machen.
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+
   const settings = await prisma.businessSettings.findFirst();
   const businessName = settings?.businessName ?? "Mein Unternehmen";
 
