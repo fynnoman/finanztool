@@ -11,7 +11,8 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const isLoginPage = url.pathname === "/login";
   const isAuthApi = url.pathname.startsWith("/api/auth");
-  if (isLoginPage || isAuthApi) return NextResponse.next();
+  const isHealth = url.pathname === "/api/health";
+  if (isLoginPage || isAuthApi || isHealth) return NextResponse.next();
 
   const hasSession =
     req.cookies.has("authjs.session-token") ||
