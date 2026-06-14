@@ -6,6 +6,12 @@ import { authConfig } from "./auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  // Logge alle Fehler ausführlich auf Server-Seite (sichtbar in Vercel Runtime Logs).
+  debug: false,
+  logger: {
+    error: (err) => console.error("[next-auth.error]", err),
+    warn: (code) => console.warn("[next-auth.warn]", code),
+  },
   providers: [
     Credentials({
       name: "Credentials",
