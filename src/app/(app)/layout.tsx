@@ -11,7 +11,9 @@ export const dynamic = "force-dynamic";
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   // Echte Auth-Prüfung passiert hier, nicht in der Middleware — so kann
   // die Middleware Edge-light bleiben und der Layout-Check JWT + DB-Zugriff machen.
-  const session = await auth();
+  // Wir fangen Fehler ab, damit ein verfälschter Cookie keine 500er auslöst:
+  // im Zweifel zurück zum Login.
+  const session = await auth().catch(() => null);
   if (!session?.user) redirect("/login");
 
   const settings = await prisma.businessSettings.findFirst();

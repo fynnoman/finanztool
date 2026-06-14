@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 export function LoginForm({ next, initialError }: { next?: string; initialError?: string }) {
@@ -9,23 +8,37 @@ export function LoginForm({ next, initialError }: { next?: string; initialError?
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     startTransition(async () => {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-      if (res?.error) {
-        setError("E-Mail oder Passwort falsch.");
-        return;
+      try {
+        const res = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (!res) {
+          setError("Keine Antwort vom Auth-Server.");
+          return;
+        }
+        if (res.error || !res.ok) {
+          setError(
+            res.error === "CredentialsSignin"
+              ? "E-Mail oder Passwort falsch."
+              : `Login fehlgeschlagen (${res.error ?? "unbekannt"}).`
+          );
+          return;
+        }
+
+        // Vollständiger Page-Reload damit der frische Session-Cookie sicher
+        // mitgeschickt wird und die Middleware ihn beim ersten Request sieht.
+        window.location.href = next || "/dashboard";
+      } catch (err) {
+        setError(`Fehler: ${(err as Error).message}`);
       }
-      router.replace(next || "/dashboard");
-      router.refresh();
     });
   };
 
