@@ -1,5 +1,10 @@
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 import { NextResponse } from "next/server";
+
+// Slim NextAuth instance — only the config, no Credentials provider with
+// bcryptjs + Prisma. Keeps the middleware Edge bundle small (~150 KB).
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const url = req.nextUrl;
