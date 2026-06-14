@@ -1,7 +1,19 @@
 import { prisma } from "@/lib/db";
 import { formatEUR } from "@/lib/money";
 import { fmtDate, toInputDate } from "@/lib/dates";
-import { createExpense, deleteExpense, expenseCategories } from "./actions";
+import { createExpense, deleteExpense } from "./actions";
+
+const EXPENSE_CATEGORIES = [
+  "Software",
+  "Büro",
+  "Werbung",
+  "Fortbildung",
+  "Fahrtkosten",
+  "Telefon/Internet",
+  "Steuerberater",
+  "Versicherung",
+  "Sonstiges",
+];
 import { Trash2, Plus } from "lucide-react";
 import { startOfYear, endOfYear } from "date-fns";
 
@@ -50,7 +62,7 @@ export default async function AusgabenPage() {
           <div>
             <label className="label">Kategorie</label>
             <select className="input" name="category">
-              {expenseCategories().map((c) => <option key={c} value={c}>{c}</option>)}
+              {EXPENSE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div className="md:col-span-6">

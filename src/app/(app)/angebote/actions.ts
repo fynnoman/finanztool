@@ -112,7 +112,7 @@ export async function deleteQuote(id: string) {
 }
 
 export async function convertQuoteToInvoice(id: string) {
-  const quote = await prisma.quote.findUnique({ where: { id }, include: { items: true } });
+  const quote = await prisma.quote.findUnique({ where: { id }, include: { items: true, invoice: true } });
   if (!quote) throw new Error("Angebot nicht gefunden");
   if (quote.invoice) throw new Error("Angebot bereits in Rechnung umgewandelt");
 

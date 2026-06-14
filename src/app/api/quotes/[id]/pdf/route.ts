@@ -45,8 +45,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     total: quote.total,
   };
 
-  const buffer = await renderToBuffer(InvoicePdfDocument(doc) as React.ReactElement);
-  return new Response(buffer, {
+  // @ts-expect-error - @react-pdf/renderer types are stricter than what we need
+  const buffer = await renderToBuffer(InvoicePdfDocument(doc));
+  return new Response(new Uint8Array(buffer), {
     status: 200,
     headers: {
       "Content-Type": "application/pdf",

@@ -4,20 +4,6 @@ import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { round2 } from "@/lib/money";
 
-const CATEGORIES = [
-  "Software",
-  "Büro",
-  "Werbung",
-  "Fortbildung",
-  "Fahrtkosten",
-  "Telefon/Internet",
-  "Steuerberater",
-  "Versicherung",
-  "Sonstiges",
-];
-
-export const expenseCategories = () => CATEGORIES;
-
 export async function createExpense(formData: FormData) {
   const details = String(formData.get("details") ?? "").trim();
   const gross = Number(String(formData.get("gross") ?? "0").replace(",", ".")) || 0;

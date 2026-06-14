@@ -4,10 +4,7 @@ import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-const STATUSES = ["NEW", "CONTACTED", "MEETING", "PROPOSAL", "WON", "LOST"] as const;
-type LeadStatus = (typeof STATUSES)[number];
-
-export const leadStatuses = () => STATUSES;
+type LeadStatus = "NEW" | "CONTACTED" | "MEETING" | "PROPOSAL" | "WON" | "LOST";
 
 export async function createLead(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();

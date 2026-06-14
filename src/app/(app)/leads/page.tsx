@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
-import { createLead, setLeadStatus, deleteLead, convertLeadToCustomer, leadStatuses } from "./actions";
+import { createLead, setLeadStatus, deleteLead, convertLeadToCustomer } from "./actions";
+
+const LEAD_STATUSES = ["NEW", "CONTACTED", "MEETING", "PROPOSAL", "WON", "LOST"] as const;
 import { formatEUR } from "@/lib/money";
 import { fmtDate } from "@/lib/dates";
 import { Plus, Trash2, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
@@ -80,7 +82,7 @@ export default async function LeadsPage() {
       </form>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-6">
-        {leadStatuses().map((status) => {
+        {LEAD_STATUSES.map((status) => {
           const col = leads.filter((l) => l.status === status);
           const colValue = col.reduce((s, l) => s + (l.expectedValue ?? 0), 0);
           return (
