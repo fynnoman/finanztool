@@ -8,7 +8,13 @@ import type { NextAuthConfig } from "next-auth";
  */
 export const authConfig: NextAuthConfig = {
   session: { strategy: "jwt" },
-  pages: { signIn: "/login" },
+  pages: {
+    signIn: "/login",
+    // Auth.js sonst-default ist /api/auth/error, eine eigene React-Page,
+    // die in einigen Edge/CSP-Konstellationen 500 wirft. Wir zeigen Fehler
+    // statt dessen auf unserer eigenen /login-Seite an.
+    error: "/login",
+  },
   providers: [], // real providers live in auth.ts (Node runtime)
   callbacks: {
     jwt: ({ token, user }) => {
