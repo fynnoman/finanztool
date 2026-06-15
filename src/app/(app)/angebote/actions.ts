@@ -77,6 +77,9 @@ export async function updateQuote(id: string, formData: FormData) {
   const items = parseItems(formData);
   const totals = totalsFromItems(items, vatRate);
 
+  const existing = await prisma.quote.findUnique({ where: { id } });
+  if (!existing) throw new Error("Angebot nicht gefunden");
+
   await prisma.$transaction([
     prisma.quoteItem.deleteMany({ where: { quoteId: id } }),
     prisma.quote.update({
@@ -92,8 +95,26 @@ export async function updateQuote(id: string, formData: FormData) {
     }),
   ]);
 
+  // Kalender-Sync: altes Ablauf-Event löschen, neues anlegen wenn Datum gesetzt.
+  await prisma.calendarEvent.deleteMany({
+    where: { kind: "ANGEBOT_ABLAUF", title: { contains: existing.number } },
+  });
+  if (validUntil) {
+    await prisma.calendarEvent.create({
+      data: {
+        title: `Angebot ${existing.number} läuft ab`,
+        start: validUntil,
+        end: validUntil,
+        allDay: true,
+        kind: "ANGEBOT_ABLAUF",
+        customerId: existing.customerId,
+      },
+    });
+  }
+
   revalidatePath("/angebote");
   revalidatePath(`/angebote/${id}`);
+  revalidatePath("/kalender");
 }
 
 export async function setQuoteStatus(id: string, status: "DRAFT" | "SENT" | "ACCEPTED" | "DECLINED" | "EXPIRED") {

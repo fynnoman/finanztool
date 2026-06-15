@@ -5,6 +5,22 @@ import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 
+/** Parse a number form field that may be empty. Empty/invalid → fallback. */
+function numField(formData: FormData, key: string, fallback: number): number {
+  const raw = formData.get(key);
+  if (raw === null || raw === undefined) return fallback;
+  const s = String(raw).trim();
+  if (s === "") return fallback;
+  const n = Number(s.replace(",", "."));
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function strField(formData: FormData, key: string, fallback: string): string {
+  const raw = formData.get(key);
+  if (raw === null || raw === undefined) return fallback;
+  return String(raw);
+}
+
 export async function updateSettings(formData: FormData) {
   const settings = await prisma.businessSettings.findFirst();
   if (!settings) throw new Error("Keine Stammdaten-Zeile vorhanden");
@@ -12,24 +28,24 @@ export async function updateSettings(formData: FormData) {
   await prisma.businessSettings.update({
     where: { id: settings.id },
     data: {
-      businessName: String(formData.get("businessName") ?? settings.businessName),
-      businessAddress: String(formData.get("businessAddress") ?? ""),
-      businessEmail: String(formData.get("businessEmail") ?? ""),
-      businessPhone: String(formData.get("businessPhone") ?? ""),
-      taxId: String(formData.get("taxId") ?? ""),
-      taxNumber: String(formData.get("taxNumber") ?? ""),
-      iban: String(formData.get("iban") ?? ""),
-      bic: String(formData.get("bic") ?? ""),
-      bankName: String(formData.get("bankName") ?? ""),
-      vatRate: Number(formData.get("vatRate") ?? settings.vatRate),
-      paymentTermsDays: Number(formData.get("paymentTermsDays") ?? settings.paymentTermsDays),
-      invoiceNumberPrefix: String(formData.get("invoiceNumberPrefix") ?? "RE"),
-      quoteNumberPrefix: String(formData.get("quoteNumberPrefix") ?? "AN"),
-      invoiceFooter: String(formData.get("invoiceFooter") ?? ""),
+      businessName: strField(formData, "businessName", settings.businessName),
+      businessAddress: strField(formData, "businessAddress", ""),
+      businessEmail: strField(formData, "businessEmail", ""),
+      businessPhone: strField(formData, "businessPhone", ""),
+      taxId: strField(formData, "taxId", ""),
+      taxNumber: strField(formData, "taxNumber", ""),
+      iban: strField(formData, "iban", ""),
+      bic: strField(formData, "bic", ""),
+      bankName: strField(formData, "bankName", ""),
+      vatRate: numField(formData, "vatRate", settings.vatRate),
+      paymentTermsDays: numField(formData, "paymentTermsDays", settings.paymentTermsDays),
+      invoiceNumberPrefix: strField(formData, "invoiceNumberPrefix", "RE"),
+      quoteNumberPrefix: strField(formData, "quoteNumberPrefix", "AN"),
+      invoiceFooter: strField(formData, "invoiceFooter", ""),
       // Empty input means "keep existing key" so the user doesn't have to
       // re-paste it on every save.
       openaiApiKey: (String(formData.get("openaiApiKey") ?? "").trim() || settings.openaiApiKey),
-      openaiModel: String(formData.get("openaiModel") ?? settings.openaiModel),
+      openaiModel: strField(formData, "openaiModel", settings.openaiModel),
     },
   });
 

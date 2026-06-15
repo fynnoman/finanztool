@@ -6,6 +6,7 @@ import { fmtDate, toInputDate } from "@/lib/dates";
 import { DocumentComposer } from "@/components/DocumentComposer";
 import { updateQuote, setQuoteStatus, deleteQuote, convertQuoteToInvoice } from "../actions";
 import { Trash2, FileDown, ArrowRight } from "lucide-react";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   DRAFT: { label: "Entwurf", cls: "pill-gray" },
@@ -64,7 +65,7 @@ export default async function AngebotPage({ params }: { params: Promise<{ id: st
       <div className="grid gap-6 md:grid-cols-3">
         <div className="md:col-span-2 space-y-6">
           <form action={updateQuote.bind(null, quote.id)} className="space-y-6">
-            <div className="panel grid gap-4 p-6 md:grid-cols-3">
+            <div className="panel grid gap-4 p-6 md:grid-cols-2">
               <div>
                 <label className="label">Datum</label>
                 <input className="input" name="date" type="date" defaultValue={toInputDate(quote.date)} />
@@ -72,10 +73,6 @@ export default async function AngebotPage({ params }: { params: Promise<{ id: st
               <div>
                 <label className="label">Gültig bis</label>
                 <input className="input" name="validUntil" type="date" defaultValue={toInputDate(quote.validUntil)} />
-              </div>
-              <div>
-                <label className="label">MwSt.-Satz wird unten gesetzt</label>
-                <input className="input" disabled defaultValue={quote.customer.name} />
               </div>
             </div>
 
@@ -127,15 +124,12 @@ export default async function AngebotPage({ params }: { params: Promise<{ id: st
           </section>
 
           <form action={deleteQuote.bind(null, quote.id)}>
-            <button
-              type="submit"
+            <ConfirmButton
               className="btn btn-danger w-full"
-              onClick={(e) => {
-                if (!confirm("Angebot wirklich löschen?")) e.preventDefault();
-              }}
+              message="Angebot wirklich löschen?"
             >
               <Trash2 size={14} /> Angebot löschen
-            </button>
+            </ConfirmButton>
           </form>
         </aside>
       </div>

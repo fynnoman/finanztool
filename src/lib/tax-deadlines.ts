@@ -70,7 +70,7 @@ export function upcomingDeadlines(now: Date = new Date(), monthsAhead = 12): Tax
         id: `gew-${year}-${m + 1}`,
         date,
         title: "Gewerbesteuer-Vorauszahlung",
-        description: `Quartals-Vorauszahlung an die Gemeinde Saarbrücken.`,
+        description: `Quartals-Vorauszahlung an die zuständige Gemeinde.`,
         kind: "gewerbe",
         recurring: "quartalsweise",
       });

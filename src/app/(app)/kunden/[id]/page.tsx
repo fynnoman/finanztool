@@ -7,6 +7,7 @@ import { updateCustomer, deleteCustomer } from "../actions";
 import { Trash2 } from "lucide-react";
 import { UploadCard } from "./UploadCard";
 import { IssuesCard } from "./IssuesCard";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 export default async function KundePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -44,17 +45,12 @@ export default async function KundePage({ params }: { params: Promise<{ id: stri
           {customer.company && <p className="mt-1 text-ink-500">{customer.company}</p>}
         </div>
         <form action={deleteCustomer.bind(null, customer.id)}>
-          <button
-            type="submit"
+          <ConfirmButton
             className="btn btn-danger"
-            formNoValidate
-            onClick={(e) => {
-              if (!confirm("Kunde wirklich löschen? Rechnungen & Angebote werden mitgelöscht."))
-                e.preventDefault();
-            }}
+            message="Kunde wirklich löschen? Rechnungen & Angebote werden mitgelöscht."
           >
             <Trash2 size={14} /> Löschen
-          </button>
+          </ConfirmButton>
         </form>
       </header>
 

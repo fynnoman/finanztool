@@ -15,9 +15,9 @@ export default async function KundenPage({
     where: q
       ? {
           OR: [
-            { name: { contains: q } },
-            { company: { contains: q } },
-            { email: { contains: q } },
+            { name: { contains: q, mode: "insensitive" } },
+            { company: { contains: q, mode: "insensitive" } },
+            { email: { contains: q, mode: "insensitive" } },
           ],
         }
       : undefined,

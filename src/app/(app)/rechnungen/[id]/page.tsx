@@ -5,7 +5,8 @@ import { formatEUR } from "@/lib/money";
 import { fmtDate, toInputDate } from "@/lib/dates";
 import { DocumentComposer } from "@/components/DocumentComposer";
 import { updateInvoice, setInvoiceStatus, recordPayment, deleteInvoice } from "../actions";
-import { Trash2, FileDown, Plus } from "lucide-react";
+import { Trash2, FileDown, FileCode, Plus } from "lucide-react";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   DRAFT: { label: "Entwurf", cls: "pill-gray" },
@@ -49,8 +50,11 @@ export default async function RechnungPage({ params }: { params: Promise<{ id: s
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <a href={`/api/invoices/${invoice.id}/pdf`} className="btn btn-outline" target="_blank" rel="noreferrer">
+          <a href={`/api/invoices/${invoice.id}/pdf`} className="btn btn-outline" target="_blank" rel="noreferrer" title="Rechnung als PDF">
             <FileDown size={14} /> PDF
+          </a>
+          <a href={`/api/invoices/${invoice.id}/zugferd`} className="btn btn-outline" target="_blank" rel="noreferrer" title="ZUGFeRD/Factur-X XML für E-Rechnung">
+            <FileCode size={14} /> E-Rechnung
           </a>
           {invoice.kind === "STANDARD" && (
             <Link href={`/rechnungen/neu?parent=${invoice.id}&kind=ABSCHLAG&customerId=${invoice.customerId}`} className="btn btn-outline">
@@ -159,15 +163,12 @@ export default async function RechnungPage({ params }: { params: Promise<{ id: s
           )}
 
           <form action={deleteInvoice.bind(null, invoice.id)}>
-            <button
-              type="submit"
+            <ConfirmButton
               className="btn btn-danger w-full"
-              onClick={(e) => {
-                if (!confirm("Rechnung wirklich löschen?")) e.preventDefault();
-              }}
+              message="Rechnung wirklich löschen?"
             >
               <Trash2 size={14} /> Rechnung löschen
-            </button>
+            </ConfirmButton>
           </form>
         </aside>
       </div>

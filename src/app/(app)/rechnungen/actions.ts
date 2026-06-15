@@ -154,9 +154,10 @@ export async function setInvoiceStatus(id: string, status: "DRAFT" | "SENT" | "P
 
 export async function recordPayment(id: string, formData: FormData) {
   const amount = Number(String(formData.get("amount")).replace(",", ".")) || 0;
+  if (amount <= 0) throw new Error("Betrag muss größer als 0 sein.");
   const inv = await prisma.invoice.findUnique({ where: { id } });
   if (!inv) throw new Error("Rechnung nicht gefunden");
-  const newPaid = round2(inv.paidAmount + amount);
+  const newPaid = round2(Math.min(inv.paidAmount + amount, inv.total));
   const status = newPaid >= inv.total ? "PAID" : newPaid > 0 ? "PARTIAL_PAID" : inv.status;
   await prisma.invoice.update({
     where: { id },

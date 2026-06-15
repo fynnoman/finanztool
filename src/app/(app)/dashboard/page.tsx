@@ -147,6 +147,7 @@ async function RecentInvoices({ rangeStart, rangeEnd }: { rangeStart?: Date; ran
       AND: [
         rangeStart ? { date: { gte: rangeStart } } : {},
         rangeEnd ? { date: { lt: rangeEnd } } : {},
+        { status: { not: "CANCELLED" } },
       ],
     },
     orderBy: { date: "desc" },

@@ -147,8 +147,11 @@ export default async function LeadsPage() {
   );
 }
 
+// Pipeline-Reihenfolge ohne LOST — die Spalte ist absichtlich Endstation.
+// LOST kann via "zurück"-Pfeil wieder in NEW geschoben werden (Reaktivierung).
 function prevStatus(s: string): "NEW" | "CONTACTED" | "MEETING" | "PROPOSAL" | "WON" | "LOST" | null {
   const order = ["NEW", "CONTACTED", "MEETING", "PROPOSAL", "WON"] as const;
+  if (s === "LOST") return "NEW"; // reaktivieren
   const i = order.indexOf(s as (typeof order)[number]);
   if (i <= 0) return null;
   return order[i - 1];
