@@ -15,8 +15,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const session = await auth().catch(() => null);
   if (!session?.user) redirect("/login");
 
-  const settings = await prisma.businessSettings.findFirst();
-  const businessName = settings?.businessName ?? "Mein Unternehmen";
+  // Stammdaten-Zeile idempotent sicherstellen — sonst crashen PDF-/ZUGFeRD-
+  // Endpoints, Numbering und die Einstellungs-Seite, sobald jemand die App
+  // mit frischer DB ohne Seed startet.
+  let settings = await prisma.businessSettings.findFirst();
+  if (!settings) {
+    settings = await prisma.businessSettings.create({
+      data: { businessName: "Mein Unternehmen" },
+    });
+  }
+  const businessName = settings.businessName;
 
   return (
     <div className="flex min-h-screen">

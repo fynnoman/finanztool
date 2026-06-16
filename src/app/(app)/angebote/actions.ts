@@ -127,8 +127,17 @@ export async function setQuoteStatus(id: string, status: "DRAFT" | "SENT" | "ACC
 }
 
 export async function deleteQuote(id: string) {
+  const existing = await prisma.quote.findUnique({ where: { id } });
+  if (existing) {
+    // Zugehörige Kalender-Ablauf-Events mitnehmen — Quotes haben kein
+    // FK-Cascade auf CalendarEvent, sonst bleiben Zombie-Einträge stehen.
+    await prisma.calendarEvent.deleteMany({
+      where: { kind: "ANGEBOT_ABLAUF", title: { contains: existing.number } },
+    });
+  }
   await prisma.quote.delete({ where: { id } });
   revalidatePath("/angebote");
+  revalidatePath("/kalender");
   redirect("/angebote");
 }
 
@@ -175,7 +184,26 @@ export async function convertQuoteToInvoice(id: string) {
     });
   }
 
+  // Angebots-Ablauf-Event entfernen — das Angebot ist jetzt angenommen.
+  await prisma.calendarEvent.deleteMany({
+    where: { kind: "ANGEBOT_ABLAUF", title: { contains: quote.number } },
+  });
+
+  // Zahlungsfrist-Event für die neue Rechnung anlegen — analog createInvoice.
+  await prisma.calendarEvent.create({
+    data: {
+      title: `Zahlung fällig: ${number}`,
+      start: dueDate,
+      end: dueDate,
+      allDay: true,
+      kind: "ZAHLUNGSFRIST",
+      customerId: quote.customerId,
+      invoiceId: invoice.id,
+    },
+  });
+
   revalidatePath("/angebote");
   revalidatePath("/rechnungen");
+  revalidatePath("/kalender");
   redirect(`/rechnungen/${invoice.id}`);
 }

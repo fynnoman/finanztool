@@ -10,9 +10,10 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const isLoginPage = url.pathname === "/login";
+  const isRegisterPage = url.pathname === "/register";
   const isAuthApi = url.pathname.startsWith("/api/auth");
   const isHealth = url.pathname === "/api/health";
-  if (isLoginPage || isAuthApi || isHealth) return NextResponse.next();
+  if (isLoginPage || isRegisterPage || isAuthApi || isHealth) return NextResponse.next();
 
   const hasSession =
     req.cookies.has("authjs.session-token") ||
