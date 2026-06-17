@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { formatEUR } from "@/lib/money";
 import { fmtDate, toInputDate } from "@/lib/dates";
 import { createExpense, deleteExpense } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 const EXPENSE_CATEGORIES = [
   "Software",
@@ -71,9 +72,9 @@ export default async function AusgabenPage() {
           </div>
         </div>
         <div className="mt-4 flex justify-end">
-          <button type="submit" className="btn btn-primary">
+          <SubmitButton pendingLabel="Speichere…">
             <Plus size={14} /> Speichern
-          </button>
+          </SubmitButton>
         </div>
       </form>
 

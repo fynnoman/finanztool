@@ -140,9 +140,9 @@ export function buildZugferdXml(inv: ZugferdInvoiceInput): string {
         ${inv.seller.bic ? `<ram:PayeeSpecifiedCreditorFinancialInstitution><ram:BICID>${esc(inv.seller.bic)}</ram:BICID></ram:PayeeSpecifiedCreditorFinancialInstitution>` : ""}
       </ram:SpecifiedTradeSettlementPaymentMeans>` : ""}
       <ram:ApplicableTradeTax>
-        <ram:CalculatedAmount>${f(inv.vatAmount)}</ram:CalculatedAmount>
+        <ram:CalculatedAmount currencyID="${cur}">${f(inv.vatAmount)}</ram:CalculatedAmount>
         <ram:TypeCode>VAT</ram:TypeCode>
-        <ram:BasisAmount>${f(inv.subtotal)}</ram:BasisAmount>
+        <ram:BasisAmount currencyID="${cur}">${f(inv.subtotal)}</ram:BasisAmount>
         <ram:CategoryCode>S</ram:CategoryCode>
         <ram:RateApplicablePercent>${inv.vatRate}</ram:RateApplicablePercent>
       </ram:ApplicableTradeTax>
@@ -154,11 +154,11 @@ export function buildZugferdXml(inv: ZugferdInvoiceInput): string {
         </ram:DueDateDateTime>
       </ram:SpecifiedTradePaymentTerms>` : ""}
       <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
-        <ram:LineTotalAmount>${f(inv.subtotal)}</ram:LineTotalAmount>
-        <ram:TaxBasisTotalAmount>${f(inv.subtotal)}</ram:TaxBasisTotalAmount>
+        <ram:LineTotalAmount currencyID="${cur}">${f(inv.subtotal)}</ram:LineTotalAmount>
+        <ram:TaxBasisTotalAmount currencyID="${cur}">${f(inv.subtotal)}</ram:TaxBasisTotalAmount>
         <ram:TaxTotalAmount currencyID="${cur}">${f(inv.vatAmount)}</ram:TaxTotalAmount>
-        <ram:GrandTotalAmount>${f(inv.total)}</ram:GrandTotalAmount>
-        <ram:DuePayableAmount>${f(inv.total)}</ram:DuePayableAmount>
+        <ram:GrandTotalAmount currencyID="${cur}">${f(inv.total)}</ram:GrandTotalAmount>
+        <ram:DuePayableAmount currencyID="${cur}">${f(inv.total)}</ram:DuePayableAmount>
       </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
     </ram:ApplicableHeaderTradeSettlement>
   </rsm:SupplyChainTradeTransaction>

@@ -9,12 +9,24 @@ type LeadStatus = "NEW" | "CONTACTED" | "MEETING" | "PROPOSAL" | "WON" | "LOST";
 export async function createLead(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   if (!name) throw new Error("Name erforderlich");
+  const email = String(formData.get("email") ?? "");
   const expected = String(formData.get("expectedValue") ?? "").replace(",", ".");
+
+  // Idempotenz-Netz gegen Mehrfach-Submits (s. createCustomer).
+  const recent = await prisma.lead.findFirst({
+    where: { name, email, createdAt: { gte: new Date(Date.now() - 15_000) } },
+    orderBy: { createdAt: "desc" },
+  });
+  if (recent) {
+    revalidatePath("/leads");
+    return;
+  }
+
   await prisma.lead.create({
     data: {
       name,
       company: String(formData.get("company") ?? ""),
-      email: String(formData.get("email") ?? ""),
+      email,
       phone: String(formData.get("phone") ?? ""),
       source: String(formData.get("source") ?? ""),
       offerDescription: String(formData.get("offerDescription") ?? ""),

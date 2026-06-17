@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { createQuote } from "../actions";
 import { DocumentComposer } from "@/components/DocumentComposer";
+import { SubmitButton } from "@/components/SubmitButton";
 import { toInputDate, addDays } from "@/lib/dates";
 
 export default async function NeuesAngebotPage({
@@ -70,7 +71,7 @@ export default async function NeuesAngebotPage({
 
         <div className="flex justify-end gap-2">
           <Link href="/angebote" className="btn btn-outline">Abbrechen</Link>
-          <button type="submit" className="btn btn-primary">Angebot anlegen</button>
+          <SubmitButton pendingLabel="Lege an…">Angebot anlegen</SubmitButton>
         </div>
       </form>
     </div>

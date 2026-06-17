@@ -4,7 +4,7 @@ import Link from "next/link";
 import { formatEUR } from "@/lib/money";
 import { fmtDate } from "@/lib/dates";
 import { updateCustomer, deleteCustomer } from "../actions";
-import { Trash2 } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 import { UploadCard } from "./UploadCard";
 import { IssuesCard } from "./IssuesCard";
 import { ConfirmButton } from "@/components/ConfirmButton";
@@ -91,21 +91,33 @@ export default async function KundePage({ params }: { params: Promise<{ id: stri
             }))}
           />
 
-          <CustomerSection title="Rechnungen" items={customer.invoices.map((i) => ({
-            href: `/rechnungen/${i.id}`,
-            label: i.number,
-            sub: i.status,
-            date: i.date,
-            amount: i.total,
-          }))} />
+          <CustomerSection
+            title="Rechnungen"
+            actionHref={`/rechnungen/neu?customerId=${customer.id}`}
+            actionLabel="Neue Rechnung"
+            emptyLabel="Noch keine Rechnungen — erste Rechnung anlegen →"
+            items={customer.invoices.map((i) => ({
+              href: `/rechnungen/${i.id}`,
+              label: i.number,
+              sub: i.status,
+              date: i.date,
+              amount: i.total,
+            }))}
+          />
 
-          <CustomerSection title="Angebote" items={customer.quotes.map((q) => ({
-            href: `/angebote/${q.id}`,
-            label: q.number,
-            sub: q.status,
-            date: q.date,
-            amount: q.total,
-          }))} />
+          <CustomerSection
+            title="Angebote"
+            actionHref={`/angebote/neu?customerId=${customer.id}`}
+            actionLabel="Neues Angebot"
+            emptyLabel="Noch keine Angebote — erstes Angebot anlegen →"
+            items={customer.quotes.map((q) => ({
+              href: `/angebote/${q.id}`,
+              label: q.number,
+              sub: q.status,
+              date: q.date,
+              amount: q.total,
+            }))}
+          />
         </div>
 
         <aside>
@@ -161,15 +173,34 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: "po
 function CustomerSection({
   title,
   items,
+  actionHref,
+  actionLabel,
+  emptyLabel,
 }: {
   title: string;
   items: { href: string; label: string; sub: string; date: Date; amount: number }[];
+  actionHref?: string;
+  actionLabel?: string;
+  emptyLabel?: string;
 }) {
   return (
     <section className="panel p-6">
-      <h2 className="mb-4 font-display text-lg font-medium">{title}</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="font-display text-lg font-medium">{title}</h2>
+        {actionHref && (
+          <Link href={actionHref} className="btn btn-outline">
+            <Plus size={14} /> {actionLabel ?? "Neu"}
+          </Link>
+        )}
+      </div>
       {items.length === 0 ? (
-        <p className="text-sm text-ink-400">Keine Einträge.</p>
+        actionHref ? (
+          <Link href={actionHref} className="block text-sm text-bronze-700 hover:underline">
+            {emptyLabel ?? "Ersten Eintrag anlegen →"}
+          </Link>
+        ) : (
+          <p className="text-sm text-ink-400">Keine Einträge.</p>
+        )
       ) : (
         <ul className="divide-y divide-ink-100">
           {items.map((it) => (

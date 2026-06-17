@@ -12,18 +12,22 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // die Middleware Edge-light bleiben und der Layout-Check JWT + DB-Zugriff machen.
   // Wir fangen Fehler ab, damit ein verfälschter Cookie keine 500er auslöst:
   // im Zweifel zurück zum Login.
-  const session = await auth().catch(() => null);
+  // Auth-Verifikation und Settings-Lookup parallel — Auth ist ein JWT-decode
+  // (CPU-bound), Settings ist ein DB-Call. Sequenziell wären das zwei Wartezeiten.
+  const [session, existing] = await Promise.all([
+    auth().catch(() => null),
+    prisma.businessSettings.findFirst(),
+  ]);
   if (!session?.user) redirect("/login");
 
   // Stammdaten-Zeile idempotent sicherstellen — sonst crashen PDF-/ZUGFeRD-
   // Endpoints, Numbering und die Einstellungs-Seite, sobald jemand die App
   // mit frischer DB ohne Seed startet.
-  let settings = await prisma.businessSettings.findFirst();
-  if (!settings) {
-    settings = await prisma.businessSettings.create({
+  const settings =
+    existing ??
+    (await prisma.businessSettings.create({
       data: { businessName: "Mein Unternehmen" },
-    });
-  }
+    }));
   const businessName = settings.businessName;
 
   return (

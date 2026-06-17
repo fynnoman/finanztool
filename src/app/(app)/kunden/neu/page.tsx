@@ -1,5 +1,6 @@
 import { createCustomer } from "../actions";
 import Link from "next/link";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default function NeuerKundePage() {
   return (
@@ -44,7 +45,7 @@ export default function NeuerKundePage() {
         </div>
         <div className="mt-6 flex justify-end gap-2">
           <Link href="/kunden" className="btn btn-outline">Abbrechen</Link>
-          <button type="submit" className="btn btn-primary">Anlegen</button>
+          <SubmitButton pendingLabel="Lege an…">Anlegen</SubmitButton>
         </div>
       </form>
     </div>

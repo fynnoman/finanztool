@@ -14,7 +14,6 @@ import {
   LogOut,
   Sparkles,
   TrendingDown,
-  Banknote,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -25,7 +24,6 @@ const nav = [
   { href: "/angebote", label: "Angebote", icon: FileText },
   { href: "/rechnungen", label: "Rechnungen", icon: Receipt },
   { href: "/ausgaben", label: "Ausgaben", icon: TrendingDown },
-  { href: "/bareinnahmen", label: "Bareinnahmen", icon: Banknote },
   { href: "/kalender", label: "Kalender", icon: Calendar },
   { href: "/steuern", label: "Steuern", icon: Calculator },
   { href: "/einstellungen", label: "Einstellungen", icon: Settings },

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { createLead, setLeadStatus, deleteLead, convertLeadToCustomer } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 const LEAD_STATUSES = ["NEW", "CONTACTED", "MEETING", "PROPOSAL", "WON", "LOST"] as const;
 import { formatEUR } from "@/lib/money";
@@ -75,9 +76,9 @@ export default async function LeadsPage() {
           </div>
         </div>
         <div className="mt-4 flex justify-end">
-          <button type="submit" className="btn btn-primary">
+          <SubmitButton pendingLabel="Lege an…">
             <Plus size={14} /> Lead anlegen
-          </button>
+          </SubmitButton>
         </div>
       </form>
 

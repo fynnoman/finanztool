@@ -3,6 +3,7 @@ import { formatEUR } from "@/lib/money";
 import { fmtDate, toInputDate } from "@/lib/dates";
 import { createCashIncome, deleteCashIncome } from "./actions";
 import { Trash2, Plus } from "lucide-react";
+import { SubmitButton } from "@/components/SubmitButton";
 import { startOfYear, endOfYear } from "date-fns";
 
 export default async function BareinnahmenPage() {
@@ -60,9 +61,9 @@ export default async function BareinnahmenPage() {
           </div>
         </div>
         <div className="mt-4 flex justify-end">
-          <button type="submit" className="btn btn-primary">
+          <SubmitButton pendingLabel="Speichere…">
             <Plus size={14} /> Speichern
-          </button>
+          </SubmitButton>
         </div>
       </form>
 

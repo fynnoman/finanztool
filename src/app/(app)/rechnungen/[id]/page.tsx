@@ -156,7 +156,11 @@ export default async function RechnungPage({ params }: { params: Promise<{ id: s
 
           {outstanding > 0 && (
             <form action={recordPayment.bind(null, invoice.id)} className="panel space-y-2 p-5">
-              <h3 className="font-display text-base font-medium">Zahlung erfassen</h3>
+              <h3 className="font-display text-base font-medium">Teilzahlung erfassen</h3>
+              <p className="text-xs text-ink-500">
+                Nur nötig, wenn der Kunde in Raten zahlt. Bei voller Zahlung einfach oben den Status auf
+                {" "}<span className="font-medium">Bezahlt</span> setzen.
+              </p>
               <input className="input" type="number" step="0.01" name="amount" placeholder="Betrag in €" defaultValue={outstanding.toFixed(2)} />
               <button type="submit" className="btn btn-accent w-full">Zahlung buchen</button>
             </form>

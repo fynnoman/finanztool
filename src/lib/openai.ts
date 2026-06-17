@@ -99,6 +99,61 @@ Regeln:
   ]);
 }
 
+// ── Freitext → Rechnungs-/Angebots-Posten ─────────────────────────
+export type AiLineItem = {
+  details: string;
+  quantity: number;
+  unitPrice: number;
+};
+
+export async function extractItemsFromDescription(
+  text: string,
+  client: OpenAIClient
+): Promise<AiLineItem[]> {
+  const system = `Du wandelst die freie Beschreibung einer erbrachten Leistung in saubere Rechnungspositionen um.
+
+Regeln:
+- Pro deutlich erkennbarer Leistung EINE Position.
+- "details": kurze sachliche Bezeichnung in dritter Person, KEIN "ich habe…". Beispiele: "Gartenarbeit bei Müller", "Heckenschnitt", "Rasen mähen 200 m²".
+- "quantity": Menge als Zahl. Default 1 wenn unklar. Bei Stunden/Stück/m² die Menge übernehmen.
+- "unitPrice": Einzelpreis pro Mengeneinheit in Euro (nur Zahl). Wenn nur ein Gesamtbetrag genannt ist und quantity = 1, dann unitPrice = Gesamtbetrag.
+- Bei mehreren Sätzen: mehrere Positionen erzeugen.
+- Wenn KEINE Leistung erkennbar ist: leeres items-Array.
+- Antworte auf Deutsch.`;
+
+  const schema = {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      items: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            details: { type: "string" },
+            quantity: { type: "number" },
+            unitPrice: { type: "number" },
+          },
+          required: ["details", "quantity", "unitPrice"],
+        },
+      },
+    },
+    required: ["items"],
+  };
+
+  const result = await callJsonSchema<{ items: AiLineItem[] }>(
+    client,
+    "line_items_extract",
+    schema,
+    [
+      { role: "system", content: system },
+      { role: "user", content: text.slice(0, 4000) },
+    ]
+  );
+  return result.items;
+}
+
 // ── Dashboard suggestions ────────────────────────────────────────
 export type AiSuggestion = {
   customer: string;

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { createInvoice } from "../actions";
 import { DocumentComposer } from "@/components/DocumentComposer";
+import { SubmitButton } from "@/components/SubmitButton";
 import { toInputDate, addDays } from "@/lib/dates";
 
 export default async function NeueRechnungPage({
@@ -90,7 +91,7 @@ export default async function NeueRechnungPage({
 
         <div className="flex justify-end gap-2">
           <Link href="/rechnungen" className="btn btn-outline">Abbrechen</Link>
-          <button type="submit" className="btn btn-primary">Rechnung anlegen</button>
+          <SubmitButton pendingLabel="Lege an…">Rechnung anlegen</SubmitButton>
         </div>
       </form>
     </div>

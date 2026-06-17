@@ -25,6 +25,22 @@ export async function createCustomer(formData: FormData) {
     taxId: formData.get("taxId") ?? "",
     notes: formData.get("notes") ?? "",
   });
+
+  // Idempotenz-Netz: gleicher Kunde (name + email) in den letzten 15 s → wiederverwenden.
+  // Schützt vor Mehrfach-Submits durch zappelnde Klicks während Cold-Start.
+  const recent = await prisma.customer.findFirst({
+    where: {
+      name: parsed.name,
+      email: parsed.email,
+      createdAt: { gte: new Date(Date.now() - 15_000) },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  if (recent) {
+    revalidatePath("/kunden");
+    redirect(`/kunden/${recent.id}`);
+  }
+
   const created = await prisma.customer.create({ data: parsed });
   revalidatePath("/kunden");
   redirect(`/kunden/${created.id}`);

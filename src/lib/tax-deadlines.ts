@@ -20,15 +20,16 @@ export type TaxDeadline = {
  *   - § 25 EStG (Jahres-Erklärung — 31.07. des Folgejahres, mit StB 28./29.02. d. Folgejahres+1)
  *   - § 19 GewStG (Gewerbesteuer-Vorauszahlung — 15.02, 15.05, 15.08, 15.11)
  */
-export function upcomingDeadlines(now: Date = new Date(), monthsAhead = 12): TaxDeadline[] {
+export function upcomingDeadlines(now: Date = new Date(), monthsAhead = 12, monthsBack = 0): TaxDeadline[] {
   const out: TaxDeadline[] = [];
+  const horizonPast = monthsBack > 0 ? addMonths(now, -monthsBack) : now;
 
   // USt-Voranmeldung — 10. des Folgemonats, jeden Monat
-  for (let i = 0; i <= monthsAhead; i++) {
+  for (let i = -monthsBack; i <= monthsAhead; i++) {
     const month = addMonths(startOfMonth(now), i);
     const reportingMonth = addMonths(month, -1); // wir melden für den Vormonat
     const deadline = setDate(month, 10);
-    if (isBefore(deadline, now)) continue;
+    if (isBefore(deadline, horizonPast)) continue;
     out.push({
       id: `ust-${deadline.toISOString().slice(0, 10)}`,
       date: deadline,
@@ -41,11 +42,11 @@ export function upcomingDeadlines(now: Date = new Date(), monthsAhead = 12): Tax
 
   // ESt-Vorauszahlungen — 10. März, 10. Juni, 10. Sep, 10. Dez
   const estMonths = [2, 5, 8, 11]; // 0-indexed
-  for (let yearOffset = 0; yearOffset <= 1; yearOffset++) {
+  for (let yearOffset = -1; yearOffset <= 1; yearOffset++) {
     const year = now.getFullYear() + yearOffset;
     for (const m of estMonths) {
       const date = new Date(year, m, 10);
-      if (isBefore(date, now)) continue;
+      if (isBefore(date, horizonPast)) continue;
       if (isAfter(date, addMonths(now, monthsAhead))) continue;
       out.push({
         id: `est-vz-${year}-${m + 1}`,
@@ -60,11 +61,11 @@ export function upcomingDeadlines(now: Date = new Date(), monthsAhead = 12): Tax
 
   // Gewerbesteuer-Vorauszahlungen — 15.02, 15.05, 15.08, 15.11
   const gewMonths = [1, 4, 7, 10];
-  for (let yearOffset = 0; yearOffset <= 1; yearOffset++) {
+  for (let yearOffset = -1; yearOffset <= 1; yearOffset++) {
     const year = now.getFullYear() + yearOffset;
     for (const m of gewMonths) {
       const date = new Date(year, m, 15);
-      if (isBefore(date, now)) continue;
+      if (isBefore(date, horizonPast)) continue;
       if (isAfter(date, addMonths(now, monthsAhead))) continue;
       out.push({
         id: `gew-${year}-${m + 1}`,
@@ -79,10 +80,10 @@ export function upcomingDeadlines(now: Date = new Date(), monthsAhead = 12): Tax
 
   // Einkommensteuer-Jahreserklärung — 31.07. des Folgejahres (ohne StB) bzw. Ende Feb. übernächstes Jahr (mit StB)
   // Wir zeigen die nächste reguläre Frist.
-  for (let yearOffset = 0; yearOffset <= 1; yearOffset++) {
+  for (let yearOffset = -1; yearOffset <= 1; yearOffset++) {
     const erklaerungsjahr = now.getFullYear() - 1 + yearOffset;
     const deadline = new Date(erklaerungsjahr + 1, 6, 31); // 31. Juli
-    if (isBefore(deadline, now)) continue;
+    if (isBefore(deadline, horizonPast)) continue;
     if (isAfter(deadline, addMonths(now, monthsAhead))) continue;
     out.push({
       id: `est-jahr-${erklaerungsjahr}`,
