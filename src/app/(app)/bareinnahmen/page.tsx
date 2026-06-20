@@ -26,15 +26,15 @@ export default async function BareinnahmenPage() {
     <div>
       <header className="mb-6 flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-medium">Bareinnahmen</h1>
+          <h1 className="font-display text-3xl font-medium">Bar bekommen</h1>
           <p className="mt-1 text-sm text-ink-400">
-            {formatEUR(agg._sum.amount ?? 0)} in diesem Jahr · Geld ohne Rechnung. Fließt in den Reingewinn, NICHT in die USt.
+            {formatEUR(agg._sum.amount ?? 0)} in diesem Jahr · Geld, das du ohne Rechnung bekommen hast.
           </p>
         </div>
       </header>
 
       <form action={createCashIncome} className="panel mb-6 p-6">
-        <h2 className="mb-4 font-display text-lg font-medium">Neue Bareinnahme</h2>
+        <h2 className="mb-4 font-display text-lg font-medium">Neuer Bar-Eintrag</h2>
         <div className="grid gap-4 md:grid-cols-6">
           <div className="md:col-span-2">
             <label className="label">Wofür *</label>
@@ -69,7 +69,7 @@ export default async function BareinnahmenPage() {
 
       <div className="panel overflow-hidden">
         {items.length === 0 ? (
-          <div className="p-8 text-center text-ink-400">Noch keine Bareinnahmen erfasst.</div>
+          <div className="p-8 text-center text-ink-400">Noch nix bar bekommen.</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-ink-50 text-xs uppercase tracking-wider text-ink-400">

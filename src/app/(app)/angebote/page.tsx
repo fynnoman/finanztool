@@ -7,9 +7,9 @@ import { setQuoteStatus } from "./actions";
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   DRAFT: { label: "Entwurf", cls: "pill-gray" },
-  SENT: { label: "Versendet", cls: "pill-blue" },
-  ACCEPTED: { label: "Angenommen", cls: "pill-green" },
-  DECLINED: { label: "Abgelehnt", cls: "pill-rose" },
+  SENT: { label: "Verschickt", cls: "pill-blue" },
+  ACCEPTED: { label: "Ja, machen wir", cls: "pill-green" },
+  DECLINED: { label: "Abgesagt", cls: "pill-rose" },
   EXPIRED: { label: "Abgelaufen", cls: "pill-gray" },
 };
 
@@ -27,7 +27,7 @@ export default async function AngebotePage() {
         <div>
           <h1 className="font-display text-3xl font-medium">Angebote</h1>
           <p className="mt-1 text-sm text-ink-400">
-            {quotes.length} gesamt · {open.length} offen · {formatEUR(openValue)} Pipeline
+            {quotes.length} insgesamt · {open.length} offen · {formatEUR(openValue)} möglich
           </p>
         </div>
         <Link href="/angebote/neu" className="btn btn-primary">
@@ -51,8 +51,8 @@ export default async function AngebotePage() {
                 <th className="px-4 py-3 text-left font-medium">Kunde</th>
                 <th className="px-4 py-3 text-left font-medium">Datum</th>
                 <th className="px-4 py-3 text-left font-medium">Status</th>
-                <th className="px-4 py-3 text-right font-medium">Brutto</th>
-                <th className="px-4 py-3 text-center font-medium">Angenommen?</th>
+                <th className="px-4 py-3 text-right font-medium">Gesamt</th>
+                <th className="px-4 py-3 text-center font-medium">Auftrag?</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-100">

@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --bg: #FAF7F2;
+    --bg: #F7FBF4;
     --surface: #FFFFFF;
-    --ink-900: #0B0F14;
-    --ink-700: #1A2230;
-    --ink-300: #8E97A4;
-    --ink-100: #E6EAF0;
-    --accent: #9E6432;
+    --ink-900: #102414;
+    --ink-700: #1E4022;
+    --ink-300: #8AA391;
+    --ink-100: #E2ECE4;
+    --accent: #2E8B2E;
   }
 
   html, body {
@@ -21,7 +21,7 @@
     font-family: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
   }
 
-  ::selection { background: rgba(158, 100, 50, 0.2); }
+  ::selection { background: rgba(46, 139, 46, 0.22); }
 
   h1, h2, h3, h4 { font-family: "Newsreader", Georgia, serif; letter-spacing: -0.01em; }
 }
@@ -39,10 +39,10 @@
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition;
   }
   .btn-primary {
-    @apply bg-ink-900 text-white hover:bg-ink-700;
+    @apply bg-bronze-600 text-white hover:bg-bronze-700;
   }
   .btn-accent {
-    @apply bg-bronze-600 text-white hover:bg-bronze-700;
+    @apply bg-bronze-500 text-white hover:bg-bronze-600;
   }
   .btn-outline {
     @apply border border-ink-100 bg-white text-ink-900 hover:border-ink-300;

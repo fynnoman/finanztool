@@ -36,7 +36,7 @@ export function RangePicker({
             onClick={() => setRange(r, 0)}
             className={cn(
               "rounded-md px-3 py-1.5 text-xs font-medium",
-              rangeKey === r ? "bg-ink-900 text-white" : "text-ink-500 hover:bg-ink-50"
+              rangeKey === r ? "bg-bronze-600 text-white" : "text-ink-500 hover:bg-bronze-50"
             )}
           >
             {r === "month" ? "Monat" : r === "year" ? "Jahr" : "Gesamt"}

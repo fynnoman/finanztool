@@ -40,7 +40,7 @@ export default async function KalenderPage({
       <header className="mb-6 flex items-end justify-between">
         <div>
           <h1 className="font-display text-3xl font-medium capitalize">{format(anchor, "LLLL yyyy", { locale: de })}</h1>
-          <p className="mt-1 text-sm text-ink-400">Termine · Zahlungsfristen · Angebots-Abläufe</p>
+          <p className="mt-1 text-sm text-ink-400">Termine, Zahlungs-Fristen und ablaufende Angebote</p>
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/kalender?m=${monthOffset - 1}`} className="btn btn-outline" aria-label="Vorheriger Monat">

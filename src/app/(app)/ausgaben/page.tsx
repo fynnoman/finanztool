@@ -34,9 +34,9 @@ export default async function AusgabenPage() {
     <div>
       <header className="mb-6 flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-medium">Absetzbare Ausgaben</h1>
+          <h1 className="font-display text-3xl font-medium">Ausgaben</h1>
           <p className="mt-1 text-sm text-ink-400">
-            Brutto {formatEUR(yearAgg._sum.gross ?? 0)} · Vorsteuer {formatEUR(yearAgg._sum.vatAmount ?? 0)} · in diesem Jahr
+            Gesamt {formatEUR(yearAgg._sum.gross ?? 0)} · MwSt. zurück {formatEUR(yearAgg._sum.vatAmount ?? 0)} · in diesem Jahr
           </p>
         </div>
       </header>
@@ -45,8 +45,8 @@ export default async function AusgabenPage() {
         <h2 className="mb-4 font-display text-lg font-medium">Neue Ausgabe</h2>
         <div className="grid gap-4 md:grid-cols-6">
           <div className="md:col-span-2">
-            <label className="label">Beschreibung *</label>
-            <input className="input" name="details" required placeholder="z. B. Notion-Abo" />
+            <label className="label">Wofür? *</label>
+            <input className="input" name="details" required placeholder="z. B. Diesel, Werkzeug, Pflanzen" />
           </div>
           <div>
             <label className="label">Brutto (€) *</label>
@@ -80,17 +80,17 @@ export default async function AusgabenPage() {
 
       <div className="panel overflow-hidden">
         {expenses.length === 0 ? (
-          <div className="p-8 text-center text-ink-400">Noch keine Ausgaben erfasst.</div>
+          <div className="p-8 text-center text-ink-400">Noch keine Ausgaben.</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-ink-50 text-xs uppercase tracking-wider text-ink-400">
               <tr>
                 <th className="px-4 py-2 text-left font-medium">Datum</th>
-                <th className="px-4 py-2 text-left font-medium">Beschreibung</th>
+                <th className="px-4 py-2 text-left font-medium">Wofür</th>
                 <th className="px-4 py-2 text-left font-medium">Kategorie</th>
                 <th className="px-4 py-2 text-right font-medium">Netto</th>
                 <th className="px-4 py-2 text-right font-medium">MwSt.</th>
-                <th className="px-4 py-2 text-right font-medium">Brutto</th>
+                <th className="px-4 py-2 text-right font-medium">Gesamt</th>
                 <th className="w-10"></th>
               </tr>
             </thead>

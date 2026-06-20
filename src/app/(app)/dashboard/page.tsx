@@ -86,47 +86,47 @@ export default async function DashboardPage({
 
   const rangeLabel =
     rangeKey === "year"
-      ? "Aktuelles Jahr"
+      ? "Dieses Jahr"
       : rangeKey === "all"
-      ? "Gesamt"
+      ? "Alles zusammen"
       : fmtMonth(addMonths(startOfMonth(new Date()), monthOffset));
 
   return (
     <div>
       <header className="mb-8 flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-medium">Dashboard</h1>
+          <h1 className="font-display text-3xl font-medium">Hi, Kevin 👋</h1>
           <p className="mt-1 text-sm text-ink-400">
-            Übersicht für <span className="font-medium text-ink-700">{rangeLabel}</span> · {invoices.length} Rechnungen · {quotes.length} Angebote
+            Hier ist dein Überblick für <span className="font-medium text-ink-700">{rangeLabel}</span> · {invoices.length} Rechnungen · {quotes.length} Angebote
           </p>
         </div>
         <RangePicker rangeKey={rangeKey} monthOffset={monthOffset} />
       </header>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <KpiCard label="Brutto Rechnungen" value={formatEUR(grossTotal)} tone="accent" hint={`${invoices.length} Rechnungen`} />
-        <KpiCard label="Bar (ohne Rechnung)" value={formatEUR(cashTotal)} tone={cashTotal > 0 ? "positive" : "muted"} />
-        <KpiCard label="Ausgaben" value={formatEUR(expenseGross)} tone="muted" hint={`Vorsteuer ${formatEUR(vorsteuer)}`} />
+        <KpiCard label="Eingenommen" value={formatEUR(grossTotal)} tone="accent" hint={`${invoices.length} Rechnungen`} />
+        <KpiCard label="Bar bekommen" value={formatEUR(cashTotal)} tone={cashTotal > 0 ? "positive" : "muted"} />
+        <KpiCard label="Ausgegeben" value={formatEUR(expenseGross)} tone="muted" hint={`MwSt. zurück ${formatEUR(vorsteuer)}`} />
         <KpiCard
-          label="Gewinn n. Steuern"
+          label="Übrig nach Steuern"
           value={formatEUR(profitAfterTaxes)}
           tone={profitAfterTaxes < 0 ? "danger" : "positive"}
-          hint={`ESt ${formatEUR(incomeTaxOnRange)} · USt ${formatEUR(ustZahllast)}`}
+          hint={`Einkommensteuer ${formatEUR(incomeTaxOnRange)} · MwSt. ans Finanzamt ${formatEUR(ustZahllast)}`}
         />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
         <KpiCard label="Netto" value={formatEUR(netTotal)} tone="muted" />
-        <KpiCard label="MwSt. (Soll)" value={formatEUR(vatTotal)} tone="muted" />
-        <KpiCard label="Bezahlt" value={formatEUR(paidTotal)} tone="positive" />
-        <KpiCard label="Offen" value={formatEUR(openTotal)} tone={openTotal > 0 ? "danger" : "muted"} />
+        <KpiCard label="MwSt." value={formatEUR(vatTotal)} tone="muted" />
+        <KpiCard label="Schon bezahlt" value={formatEUR(paidTotal)} tone="positive" />
+        <KpiCard label="Noch offen" value={formatEUR(openTotal)} tone={openTotal > 0 ? "danger" : "muted"} />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <KpiCard label="Angebote (offen)" value={formatEUR(openQuotes)} tone="muted" hint={`${quotes.filter((q) => q.status === "SENT").length} versendet`} />
-        <KpiCard label="Kunden gesamt" value={String(customers)} tone="muted" />
+        <KpiCard label="Angebote offen" value={formatEUR(openQuotes)} tone="muted" hint={`${quotes.filter((q) => q.status === "SENT").length} verschickt`} />
+        <KpiCard label="Kunden" value={String(customers)} tone="muted" />
         <KpiCard label="Bar-Einträge" value={String(cashIncomes.length)} tone="muted" />
-        <KpiCard label="Ausgaben-Einträge" value={String(expenses.length)} tone="muted" />
+        <KpiCard label="Belege" value={String(expenses.length)} tone="muted" />
       </div>
 
       <div className="mt-8">
@@ -164,7 +164,7 @@ async function RecentInvoices({ rangeStart, rangeEnd }: { rangeStart?: Date; ran
         </Link>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-ink-400">Noch keine Rechnungen in diesem Zeitraum.</p>
+        <p className="text-sm text-ink-400">Noch keine Rechnungen in dieser Zeit.</p>
       ) : (
         <ul className="divide-y divide-ink-100">
           {items.map((inv) => (
@@ -209,7 +209,7 @@ async function RecentQuotes({ rangeStart, rangeEnd }: { rangeStart?: Date; range
         </Link>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-ink-400">Noch keine Angebote in diesem Zeitraum.</p>
+        <p className="text-sm text-ink-400">Noch keine Angebote in dieser Zeit.</p>
       ) : (
         <ul className="divide-y divide-ink-100">
           {items.map((q) => (
@@ -235,11 +235,11 @@ async function RecentQuotes({ rangeStart, rangeEnd }: { rangeStart?: Date; range
 function StatusPill({ status }: { status: string }) {
   const map: Record<string, { label: string; cls: string }> = {
     DRAFT: { label: "Entwurf", cls: "pill-gray" },
-    SENT: { label: "Versendet", cls: "pill-blue" },
-    PARTIAL_PAID: { label: "Teilbezahlt", cls: "pill-amber" },
+    SENT: { label: "Verschickt", cls: "pill-blue" },
+    PARTIAL_PAID: { label: "Teil-bezahlt", cls: "pill-amber" },
     PAID: { label: "Bezahlt", cls: "pill-green" },
-    OVERDUE: { label: "Überfällig", cls: "pill-rose" },
-    CANCELLED: { label: "Storniert", cls: "pill-gray" },
+    OVERDUE: { label: "Zu spät", cls: "pill-rose" },
+    CANCELLED: { label: "Abgesagt", cls: "pill-gray" },
   };
   const s = map[status] ?? { label: status, cls: "pill-gray" };
   return <span className={s.cls}>{s.label}</span>;
@@ -248,7 +248,7 @@ function StatusPill({ status }: { status: string }) {
 function QuoteStatusPill({ status }: { status: string }) {
   const map: Record<string, { label: string; cls: string }> = {
     DRAFT: { label: "Entwurf", cls: "pill-gray" },
-    SENT: { label: "Versendet", cls: "pill-blue" },
+    SENT: { label: "Verschickt", cls: "pill-blue" },
     ACCEPTED: { label: "Angenommen", cls: "pill-green" },
     DECLINED: { label: "Abgelehnt", cls: "pill-rose" },
     EXPIRED: { label: "Abgelaufen", cls: "pill-gray" },

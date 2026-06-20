@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Finanztool",
-  description: "Rechnungen, Angebote, Finanzübersicht.",
+  title: "Galabau Eifler",
+  description: "Rechnungen, Angebote und Übersicht für Kevin.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

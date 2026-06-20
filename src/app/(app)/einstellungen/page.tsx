@@ -13,7 +13,7 @@ export default async function EinstellungenPage() {
     <div>
       <header className="mb-6">
         <h1 className="font-display text-3xl font-medium">Einstellungen</h1>
-        <p className="mt-1 text-sm text-ink-400">Stammdaten, Bankverbindung, Logo, Passwort.</p>
+        <p className="mt-1 text-sm text-ink-400">Firma, Bank, Logo, Passwort.</p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -99,26 +99,26 @@ export default async function EinstellungenPage() {
           </section>
 
           <section className="panel p-6">
-            <h2 className="mb-4 font-display text-lg font-medium">Rechnungs-Standard</h2>
+            <h2 className="mb-4 font-display text-lg font-medium">Rechnungen — Standards</h2>
             <div className="grid gap-4 md:grid-cols-3">
               <div>
-                <label className="label">MwSt.-Satz (%)</label>
+                <label className="label">MwSt. in %</label>
                 <input className="input" name="vatRate" type="number" step="0.1" defaultValue={settings.vatRate} />
               </div>
               <div>
-                <label className="label">Zahlungsziel (Tage)</label>
+                <label className="label">Zahlbar in Tagen</label>
                 <input className="input" name="paymentTermsDays" type="number" defaultValue={settings.paymentTermsDays} />
               </div>
               <div>
-                <label className="label">Rechnungs-Präfix</label>
+                <label className="label">Rechnungs-Nummer beginnt mit</label>
                 <input className="input" name="invoiceNumberPrefix" defaultValue={settings.invoiceNumberPrefix} />
               </div>
               <div>
-                <label className="label">Angebots-Präfix</label>
+                <label className="label">Angebots-Nummer beginnt mit</label>
                 <input className="input" name="quoteNumberPrefix" defaultValue={settings.quoteNumberPrefix} />
               </div>
               <div className="md:col-span-2">
-                <label className="label">Fußnote</label>
+                <label className="label">Text ganz unten auf der Rechnung</label>
                 <input className="input" name="invoiceFooter" defaultValue={settings.invoiceFooter} />
               </div>
             </div>
@@ -136,11 +136,11 @@ export default async function EinstellungenPage() {
           <form action={changePassword} className="panel space-y-4 p-6">
             <h2 className="font-display text-lg font-medium">Passwort ändern</h2>
             <div>
-              <label className="label">Aktuell</label>
+              <label className="label">Altes Passwort</label>
               <input className="input" type="password" name="current" required autoComplete="current-password" />
             </div>
             <div>
-              <label className="label">Neu (min. 8 Zeichen)</label>
+              <label className="label">Neues Passwort (min. 8 Zeichen)</label>
               <input className="input" type="password" name="next" required autoComplete="new-password" minLength={8} />
             </div>
             <button type="submit" className="btn btn-primary w-full">Speichern</button>

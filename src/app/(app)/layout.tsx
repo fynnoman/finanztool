@@ -26,7 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const settings =
     existing ??
     (await prisma.businessSettings.create({
-      data: { businessName: "Mein Unternehmen" },
+      data: { businessName: "Galabau Eifler" },
     }));
   const businessName = settings.businessName;
 

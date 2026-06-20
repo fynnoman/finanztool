@@ -1,10 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
-  LayoutDashboard,
+  Home,
   Users,
   FileText,
   Receipt,
@@ -18,13 +19,13 @@ import {
 import { cn } from "@/lib/cn";
 
 const nav = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/leads", label: "Leads", icon: Sparkles },
+  { href: "/dashboard", label: "Start", icon: Home },
+  { href: "/leads", label: "Anfragen", icon: Sparkles },
   { href: "/kunden", label: "Kunden", icon: Users },
   { href: "/angebote", label: "Angebote", icon: FileText },
   { href: "/rechnungen", label: "Rechnungen", icon: Receipt },
   { href: "/ausgaben", label: "Ausgaben", icon: TrendingDown },
-  { href: "/kalender", label: "Kalender", icon: Calendar },
+  { href: "/kalender", label: "Termine", icon: Calendar },
   { href: "/steuern", label: "Steuern", icon: Calculator },
   { href: "/einstellungen", label: "Einstellungen", icon: Settings },
 ];
@@ -34,12 +35,19 @@ export function Sidebar({ businessName }: { businessName: string }) {
   return (
     <aside className="flex w-60 flex-col border-r border-ink-100 bg-white">
       <div className="flex items-center gap-3 px-5 py-5">
-        <div className="grid h-9 w-9 place-items-center rounded-lg bg-ink-900 font-display text-base font-medium text-white">
-          {businessName.slice(0, 1).toUpperCase()}
+        <div className="relative h-12 w-12 shrink-0">
+          <Image
+            src="/logo.webp"
+            alt="Galabau Eifler"
+            fill
+            sizes="48px"
+            className="object-contain"
+            priority
+          />
         </div>
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold text-ink-900">{businessName}</div>
-          <div className="text-[11px] uppercase tracking-wider text-ink-400">Finanztool</div>
+          <div className="text-[11px] uppercase tracking-wider text-ink-400">Kevin Eifler</div>
         </div>
       </div>
 
@@ -55,8 +63,8 @@ export function Sidebar({ businessName }: { businessName: string }) {
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition",
                     active
-                      ? "bg-ink-900 text-white"
-                      : "text-ink-700 hover:bg-ink-50"
+                      ? "bg-bronze-600 text-white"
+                      : "text-ink-700 hover:bg-bronze-50"
                   )}
                 >
                   <Icon size={16} className={cn(active ? "" : "text-ink-400")} />
@@ -71,7 +79,7 @@ export function Sidebar({ businessName }: { businessName: string }) {
       <div className="border-t border-ink-100 p-3">
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink-500 hover:bg-ink-50"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink-500 hover:bg-bronze-50"
         >
           <LogOut size={16} />
           Abmelden

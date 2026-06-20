@@ -36,15 +36,15 @@ export default async function LeadsPage() {
     <div>
       <header className="mb-6 flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-medium">Leads</h1>
+          <h1 className="font-display text-3xl font-medium">Anfragen</h1>
           <p className="mt-1 text-sm text-ink-400">
-            Pipeline {formatEUR(pipelineValue)} · Gewonnen {formatEUR(wonValue)} · {leads.length} Leads
+            Mögliche Aufträge {formatEUR(pipelineValue)} · Gewonnen {formatEUR(wonValue)} · {leads.length} Anfragen
           </p>
         </div>
       </header>
 
       <form action={createLead} className="panel mb-6 p-6">
-        <h2 className="mb-4 font-display text-lg font-medium">Neuer Lead</h2>
+        <h2 className="mb-4 font-display text-lg font-medium">Neue Anfrage</h2>
         <div className="grid gap-4 md:grid-cols-6">
           <div className="md:col-span-2">
             <label className="label">Name *</label>
@@ -71,13 +71,13 @@ export default async function LeadsPage() {
             <input className="input" name="phone" />
           </div>
           <div className="md:col-span-6">
-            <label className="label">Was will der Lead?</label>
-            <input className="input" name="offerDescription" placeholder="z. B. Website + SEO" />
+            <label className="label">Was möchte die Person?</label>
+            <input className="input" name="offerDescription" placeholder="z. B. Garten neu anlegen, Hecke schneiden" />
           </div>
         </div>
         <div className="mt-4 flex justify-end">
           <SubmitButton pendingLabel="Lege an…">
-            <Plus size={14} /> Lead anlegen
+            <Plus size={14} /> Anfrage anlegen
           </SubmitButton>
         </div>
       </form>

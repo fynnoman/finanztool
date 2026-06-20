@@ -59,7 +59,7 @@ export default async function SteuernPage() {
       <header className="mb-6">
         <h1 className="font-display text-3xl font-medium">Steuern · {format(new Date(), "yyyy")}</h1>
         <p className="mt-1 text-sm text-ink-400">
-          Schätzung auf Basis der Rechnungen des laufenden Jahres. Keine rechtsverbindliche Berechnung — bitte vom Steuerberater prüfen lassen.
+          Geschätzt für dieses Jahr aus deinen Rechnungen. Nicht offiziell — am Ende prüft das immer dein Steuerberater.
         </p>
       </header>
 
@@ -129,29 +129,29 @@ export default async function SteuernPage() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <KpiCard label="Netto-Umsatz" value={formatEUR(netYear)} tone="accent" hint={`${yearInvoices.length} Rechnungen`} />
-        <KpiCard label="Bareinnahmen" value={formatEUR(cashYear)} tone={cashYear > 0 ? "positive" : "muted"} />
-        <KpiCard label="Ausgaben (Netto)" value={formatEUR(expenseNet)} tone="muted" hint={`Brutto ${formatEUR(yearExpenses.reduce((s, e) => s + e.gross, 0))}`} />
-        <KpiCard label="Zu versteuern (zvE)" value={formatEUR(zvE)} tone="accent" />
+        <KpiCard label="Bar bekommen" value={formatEUR(cashYear)} tone={cashYear > 0 ? "positive" : "muted"} />
+        <KpiCard label="Ausgaben (Netto)" value={formatEUR(expenseNet)} tone="muted" hint={`Gesamt ${formatEUR(yearExpenses.reduce((s, e) => s + e.gross, 0))}`} />
+        <KpiCard label="Davon Steuern zahlen auf" value={formatEUR(zvE)} tone="accent" />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <KpiCard label="MwSt. (Soll)" value={formatEUR(vatCollected)} tone="muted" hint="aus Rechnungen" />
-        <KpiCard label="Vorsteuer" value={formatEUR(vorsteuer)} tone="muted" hint="aus Ausgaben" />
-        <KpiCard label="USt-Zahllast" value={formatEUR(ustZahllast)} tone={ustZahllast > 0 ? "danger" : "muted"} />
-        <KpiCard label="ESt + Soli" value={formatEUR(est + soliAmount)} tone={est > 0 ? "danger" : "muted"} />
+        <KpiCard label="MwSt. eingenommen" value={formatEUR(vatCollected)} tone="muted" hint="aus Rechnungen" />
+        <KpiCard label="MwSt. zurück" value={formatEUR(vorsteuer)} tone="muted" hint="aus Ausgaben" />
+        <KpiCard label="MwSt. ans Finanzamt" value={formatEUR(ustZahllast)} tone={ustZahllast > 0 ? "danger" : "muted"} />
+        <KpiCard label="Einkommensteuer + Soli" value={formatEUR(est + soliAmount)} tone={est > 0 ? "danger" : "muted"} />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <KpiCard label="Gesamt-Steuerlast" value={formatEUR(totalTaxBurden)} tone="danger" />
-        <KpiCard label="Gewinn n. Steuern" value={formatEUR(profitAfter)} tone={profitAfter < 0 ? "danger" : "positive"} />
-        <KpiCard label="Effektiver Steuersatz" value={zvE > 0 ? `${Math.round(((est + soliAmount) / zvE) * 100)}%` : "—"} tone="muted" />
-        <KpiCard label="Brutto-Umsatz" value={formatEUR(grossYear)} tone="muted" />
+        <KpiCard label="Steuern insgesamt" value={formatEUR(totalTaxBurden)} tone="danger" />
+        <KpiCard label="Übrig nach Steuern" value={formatEUR(profitAfter)} tone={profitAfter < 0 ? "danger" : "positive"} />
+        <KpiCard label="Steuersatz (effektiv)" value={zvE > 0 ? `${Math.round(((est + soliAmount) / zvE) * 100)}%` : "—"} tone="muted" />
+        <KpiCard label="Umsatz gesamt" value={formatEUR(grossYear)} tone="muted" />
       </div>
 
       <section className="mt-8 panel overflow-hidden">
         <div className="border-b border-ink-100 px-5 py-4">
-          <h2 className="font-display text-lg font-medium">USt-Voranmeldung (vereinfacht)</h2>
-          <p className="text-xs text-ink-400">Monatswerte für die Übergabe an Steuerberater oder Elster.</p>
+          <h2 className="font-display text-lg font-medium">MwSt. nach Monat</h2>
+          <p className="text-xs text-ink-400">Für deinen Steuerberater oder Elster.</p>
         </div>
         <table className="w-full text-sm">
           <thead className="bg-ink-50 text-xs uppercase tracking-wider text-ink-400">
@@ -159,7 +159,7 @@ export default async function SteuernPage() {
               <th className="px-4 py-2 text-left font-medium">Monat</th>
               <th className="px-4 py-2 text-right font-medium">Netto</th>
               <th className="px-4 py-2 text-right font-medium">MwSt.</th>
-              <th className="px-4 py-2 text-right font-medium">Brutto</th>
+              <th className="px-4 py-2 text-right font-medium">Gesamt</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-ink-100">

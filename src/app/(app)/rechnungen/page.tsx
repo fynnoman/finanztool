@@ -6,17 +6,17 @@ import { Plus } from "lucide-react";
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   DRAFT: { label: "Entwurf", cls: "pill-gray" },
-  SENT: { label: "Versendet", cls: "pill-blue" },
-  PARTIAL_PAID: { label: "Teilbezahlt", cls: "pill-amber" },
+  SENT: { label: "Verschickt", cls: "pill-blue" },
+  PARTIAL_PAID: { label: "Teil-bezahlt", cls: "pill-amber" },
   PAID: { label: "Bezahlt", cls: "pill-green" },
-  OVERDUE: { label: "Überfällig", cls: "pill-rose" },
-  CANCELLED: { label: "Storniert", cls: "pill-gray" },
+  OVERDUE: { label: "Zu spät", cls: "pill-rose" },
+  CANCELLED: { label: "Abgesagt", cls: "pill-gray" },
 };
 
 const KIND_LABELS: Record<string, string> = {
   STANDARD: "Rechnung",
-  ABSCHLAG: "Abschlag",
-  SCHLUSS: "Schluss",
+  ABSCHLAG: "Anzahlung",
+  SCHLUSS: "Schluss-Rechnung",
 };
 
 export default async function RechnungenPage() {
@@ -34,7 +34,7 @@ export default async function RechnungenPage() {
         <div>
           <h1 className="font-display text-3xl font-medium">Rechnungen</h1>
           <p className="mt-1 text-sm text-ink-400">
-            {invoices.length} gesamt · {formatEUR(grossTotal)} Brutto · {formatEUR(openTotal)} offen
+            {invoices.length} insgesamt · {formatEUR(grossTotal)} eingenommen · {formatEUR(openTotal)} noch offen
           </p>
         </div>
         <Link href="/rechnungen/neu" className="btn btn-primary">
@@ -60,7 +60,7 @@ export default async function RechnungenPage() {
                 <th className="px-4 py-3 text-left font-medium">Datum</th>
                 <th className="px-4 py-3 text-left font-medium">Fällig</th>
                 <th className="px-4 py-3 text-left font-medium">Status</th>
-                <th className="px-4 py-3 text-right font-medium">Brutto</th>
+                <th className="px-4 py-3 text-right font-medium">Gesamt</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-100">
