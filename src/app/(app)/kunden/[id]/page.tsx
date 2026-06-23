@@ -36,7 +36,7 @@ export default async function KundePage({ params }: { params: Promise<{ id: stri
 
   return (
     <div>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <Link href="/kunden" className="text-sm text-ink-400 hover:underline">
             ← Kunden

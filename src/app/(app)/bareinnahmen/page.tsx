@@ -24,7 +24,7 @@ export default async function BareinnahmenPage() {
 
   return (
     <div>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-medium">Bar bekommen</h1>
           <p className="mt-1 text-sm text-ink-400">
@@ -71,7 +71,7 @@ export default async function BareinnahmenPage() {
         {items.length === 0 ? (
           <div className="p-8 text-center text-ink-400">Noch nix bar bekommen.</div>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full min-w-[640px] text-sm">
             <thead className="bg-ink-50 text-xs uppercase tracking-wider text-ink-400">
               <tr>
                 <th className="px-4 py-2 text-left font-medium">Datum</th>
@@ -98,7 +98,7 @@ export default async function BareinnahmenPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
       </div>
     </div>

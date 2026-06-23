@@ -27,7 +27,7 @@ export default async function AngebotPage({ params }: { params: Promise<{ id: st
 
   return (
     <div>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <Link href="/angebote" className="text-sm text-ink-400 hover:underline">← Angebote</Link>
           <h1 className="mt-2 flex items-center gap-3 font-display text-3xl font-medium">
@@ -39,7 +39,7 @@ export default async function AngebotPage({ params }: { params: Promise<{ id: st
             {quote.validUntil && <> · gültig bis {fmtDate(quote.validUntil)}</>}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <a href={`/api/quotes/${quote.id}/pdf`} className="btn btn-outline" target="_blank" rel="noreferrer">
             <FileDown size={14} /> PDF
           </a>

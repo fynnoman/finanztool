@@ -26,15 +26,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const settings =
     existing ??
     (await prisma.businessSettings.create({
-      data: { businessName: "Galabau Eifler" },
+      data: { businessName: "Garten- und Landschaftsbau Eifler" },
     }));
   const businessName = settings.businessName;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen flex-col md:flex-row">
       <Sidebar businessName={businessName} />
       <main className="flex-1 overflow-x-auto">
-        <div className="mx-auto max-w-6xl px-8 py-8">{children}</div>
+        <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">{children}</div>
       </main>
     </div>
   );

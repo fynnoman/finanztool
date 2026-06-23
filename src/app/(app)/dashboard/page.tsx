@@ -93,7 +93,7 @@ export default async function DashboardPage({
 
   return (
     <div>
-      <header className="mb-8 flex items-end justify-between">
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-medium">Hi, Kevin 👋</h1>
           <p className="mt-1 text-sm text-ink-400">

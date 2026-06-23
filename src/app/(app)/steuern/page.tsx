@@ -153,7 +153,7 @@ export default async function SteuernPage() {
           <h2 className="font-display text-lg font-medium">MwSt. nach Monat</h2>
           <p className="text-xs text-ink-400">Für deinen Steuerberater oder Elster.</p>
         </div>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto"><table className="w-full min-w-[640px] text-sm">
           <thead className="bg-ink-50 text-xs uppercase tracking-wider text-ink-400">
             <tr>
               <th className="px-4 py-2 text-left font-medium">Monat</th>
@@ -178,7 +178,7 @@ export default async function SteuernPage() {
               <td className="px-4 py-2 text-right num">{formatEUR(grossYear)}</td>
             </tr>
           </tbody>
-        </table>
+        </table></div>
       </section>
     </div>
   );

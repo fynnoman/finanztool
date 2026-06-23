@@ -15,7 +15,7 @@ export default async function LoginPage({
           <div className="relative mx-auto mb-4 h-20 w-40">
             <Image
               src="/logo.webp"
-              alt="Galabau Eifler"
+              alt="Garten- und Landschaftsbau Eifler"
               fill
               sizes="160px"
               className="object-contain"

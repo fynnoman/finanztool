@@ -34,7 +34,7 @@ export default async function LeadsPage() {
 
   return (
     <div>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-medium">Anfragen</h1>
           <p className="mt-1 text-sm text-ink-400">

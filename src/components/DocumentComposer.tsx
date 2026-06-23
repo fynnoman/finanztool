@@ -114,8 +114,8 @@ export function DocumentComposer({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-ink-100">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-ink-100">
+        <table className="w-full min-w-[640px] text-sm">
           <thead className="bg-ink-50 text-xs uppercase tracking-wider text-ink-400">
             <tr>
               <th className="px-3 py-2 text-left font-medium">Leistung</th>

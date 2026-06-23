@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Galabau Eifler",
+  title: "Garten- und Landschaftsbau Eifler",
   description: "Rechnungen, Angebote und Übersicht für Kevin.",
 };
 

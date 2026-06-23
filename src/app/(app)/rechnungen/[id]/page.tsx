@@ -35,7 +35,7 @@ export default async function RechnungPage({ params }: { params: Promise<{ id: s
 
   return (
     <div>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <Link href="/rechnungen" className="text-sm text-ink-400 hover:underline">← Rechnungen</Link>
           <h1 className="mt-2 flex items-center gap-3 font-display text-3xl font-medium">
@@ -49,7 +49,7 @@ export default async function RechnungPage({ params }: { params: Promise<{ id: s
             {invoice.dueDate && <> · fällig {fmtDate(invoice.dueDate)}</>}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <a href={`/api/invoices/${invoice.id}/pdf`} className="btn btn-outline" target="_blank" rel="noreferrer" title="Rechnung als PDF">
             <FileDown size={14} /> PDF
           </a>

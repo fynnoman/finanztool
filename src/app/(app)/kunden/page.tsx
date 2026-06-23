@@ -30,7 +30,7 @@ export default async function KundenPage({
 
   return (
     <div>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-medium">Kunden</h1>
           <p className="mt-1 text-sm text-ink-400">{customers.length} Einträge</p>
@@ -62,7 +62,7 @@ export default async function KundenPage({
             </Link>
           </div>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full min-w-[640px] text-sm">
             <thead className="bg-ink-50 text-xs uppercase tracking-wider text-ink-400">
               <tr>
                 <th className="px-4 py-3 text-left font-medium">Name</th>
@@ -91,7 +91,7 @@ export default async function KundenPage({
                 );
               })}
             </tbody>
-          </table>
+          </table></div>
         )}
       </div>
     </div>

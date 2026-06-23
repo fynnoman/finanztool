@@ -19,7 +19,7 @@ const config: Config = {
           100: "#E2ECE4",
           50: "#F1F6F2",
         },
-        // Galabau Eifler — Blattgrün als Hauptakzent.
+        // Garten- und Landschaftsbau Eifler — Blattgrün als Hauptakzent.
         bronze: {
           900: "#0F3A11",
           800: "#19551A",

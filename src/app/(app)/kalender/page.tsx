@@ -37,7 +37,7 @@ export default async function KalenderPage({
 
   return (
     <div>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-medium capitalize">{format(anchor, "LLLL yyyy", { locale: de })}</h1>
           <p className="mt-1 text-sm text-ink-400">Termine, Zahlungs-Fristen und ablaufende Angebote</p>
